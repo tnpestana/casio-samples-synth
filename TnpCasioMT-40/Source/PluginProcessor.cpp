@@ -12,6 +12,23 @@
 #include "PluginEditor.h"
 
 //==============================================================================
+namespace
+{
+    constexpr int numVoices = 10;
+    constexpr int numMidiNotes = 128;
+    constexpr int numTones = 24;
+    constexpr int numSa10Tones = 12;
+    constexpr int numSk1Tones = 8;
+
+    constexpr int zoneRoots[] = { 36, 48, 60, 72, 84 };
+    constexpr int zoneHalfRange = 6;
+    constexpr int zoneWidth = 12;
+
+    constexpr double attackTime = 0.01;
+    constexpr double releaseTime = 0.1;
+    constexpr double maxSampleLength = 10.0;
+}
+
 TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
 	: AudioProcessor(BusesProperties()
@@ -26,7 +43,7 @@ TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
 		{ 
 		  std::make_unique<AudioParameterChoice>("keyboard", "keyboard",
 			StringArray("MT-40", "Rapman", "SA-10", "SK-1"), 1),
-		  std::make_unique<AudioParameterInt>("tone", "tone", 0, 23, 1)
+		  std::make_unique<AudioParameterInt>("tone", "tone", 0, numTones - 1, 1)
 		}),
     midiState(),
 	localKeyboard(0),
@@ -34,7 +51,7 @@ TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
 	
 #endif
 {
-	for (auto i = 0; i < 10; ++i)
+	for (auto i = 0; i < numVoices; ++i)
 		synth.addVoice(new SamplerVoice());
 	setVoice();
 }
@@ -58,7 +75,7 @@ MidiKeyboardState & TnpCasioMt40AudioProcessor::getMidiState()
 //==============================================================================
 void TnpCasioMt40AudioProcessor::setVoice()
 {
-	for (auto i = 0; i < 128; ++i)
+	for (auto i = 0; i < numMidiNotes; ++i)
 		synth.noteOff(1, i, 0.0f, true);
 
 	WavAudioFormat wavFormat;
@@ -80,14 +97,14 @@ void TnpCasioMt40AudioProcessor::setVoice()
 			break;
 		case 2:
 		{
-			int i = localTone * 12 / 24;
+			int i = localTone * numSa10Tones / numTones;
 			samplePtr = sampleData.CasioSa10[i].first;
 			sampleSize = sampleData.CasioSa10[i].second;
 			break;
 		}
 		case 3:
 		{
-			int i = localTone * 8 / 24;
+			int i = localTone * numSk1Tones / numTones;
 			samplePtr = sampleData.CasioSk1[i].first;
 			sampleSize = sampleData.CasioSk1[i].second;
 			break;
@@ -98,17 +115,16 @@ void TnpCasioMt40AudioProcessor::setVoice()
 
 	synth.clearSounds();
 
-	int roots[] = { 36, 48, 60, 72, 84 };
-	for (auto root : roots)
+	for (auto root : zoneRoots)
 	{
 		BigInteger notes;
-		notes.setRange(root - 6, 12, true);
+		notes.setRange(root - zoneHalfRange, zoneWidth, true);
 		auto reader = std::unique_ptr<AudioFormatReader>(
 			wavFormat.createReaderFor(
 				new MemoryInputStream(samplePtr, sampleSize, false), true));
 		if (reader != nullptr)
 			synth.addSound(new SamplerSound("demo",
-				*reader, notes, root, 0.01, 0.1, 10.0));
+				*reader, notes, root, attackTime, releaseTime, maxSampleLength));
 	}
 }
 
