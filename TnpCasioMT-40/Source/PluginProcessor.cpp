@@ -9,6 +9,7 @@
 */
 
 #include "PluginProcessor.h"
+#include "SampleData.h"
 #include "PluginEditor.h"
 
 //==============================================================================
@@ -44,7 +45,8 @@ TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
 		}),
     midiState(),
 	localKeyboard(0),
-	localTone(0)
+	localTone(0),
+	sampleData(std::make_unique<SampleData>())
 	
 #endif
 {
@@ -85,25 +87,25 @@ void TnpCasioMt40AudioProcessor::setVoice()
 	switch (localKeyboard)
 	{
 		case 0:
-			samplePtr = sampleData.CasioMt40[localTone].first;
-			sampleSize = sampleData.CasioMt40[localTone].second;
+			samplePtr = sampleData->CasioMt40[localTone].first;
+			sampleSize = sampleData->CasioMt40[localTone].second;
 			break;
 		case 1:
-			samplePtr = sampleData.CasioRapman[localTone].first;
-			sampleSize = sampleData.CasioRapman[localTone].second;
+			samplePtr = sampleData->CasioRapman[localTone].first;
+			sampleSize = sampleData->CasioRapman[localTone].second;
 			break;
 		case 2:
 		{
 			int i = jmap(localTone, 0, numTones - 1, 0, numSa10Tones - 1);
-			samplePtr = sampleData.CasioSa10[i].first;
-			sampleSize = sampleData.CasioSa10[i].second;
+			samplePtr = sampleData->CasioSa10[i].first;
+			sampleSize = sampleData->CasioSa10[i].second;
 			break;
 		}
 		case 3:
 		{
 			int i = jmap(localTone, 0, numTones - 1, 0, numSk1Tones - 1);
-			samplePtr = sampleData.CasioSk1[i].first;
-			sampleSize = sampleData.CasioSk1[i].second;
+			samplePtr = sampleData->CasioSk1[i].first;
+			sampleSize = sampleData->CasioSk1[i].second;
 			break;
 		}
 		default:

@@ -11,8 +11,10 @@
 #pragma once
 
 #include <atomic>
+#include <memory>
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "SampleData.h"
+
+struct SampleData;
 
 constexpr int numTones = 24;
 constexpr int numSa10Tones = 12;
@@ -73,8 +75,8 @@ private:
     MidiKeyboardState midiState;
     Synthesiser synth;
     std::atomic<int> localKeyboard;
-	std::atomic<int> localTone;
-    SampleData sampleData;
+    std::atomic<int> localTone;
+    std::unique_ptr<SampleData> sampleData;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TnpCasioMt40AudioProcessor)
