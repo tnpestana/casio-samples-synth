@@ -42,7 +42,7 @@ TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
 	treeState(*this, nullptr, "CasioState", 
 		{ 
 		  std::make_unique<AudioParameterChoice>(ParameterID("keyboard", 1), "keyboard",
-			StringArray("MT-40", "Rapman", "SA-10", "SK-1"), 1),
+			StringArray("MT-40", "Rapman", "SA-10", "SK-1"), 0),
 		  std::make_unique<AudioParameterInt>(ParameterID("tone", 1), "tone", 0, numTones - 1, 1)
 		}),
     midiState(),
