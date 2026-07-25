@@ -23,7 +23,8 @@ constexpr int numSk1Tones = 8;
 //==============================================================================
 /**
 */
-class TnpCasioMt40AudioProcessor  : public AudioProcessor
+class TnpCasioMt40AudioProcessor  : public AudioProcessor,
+                                    private AsyncUpdater
 {
 public:
     //==============================================================================
@@ -77,6 +78,9 @@ private:
     std::atomic<int> localKeyboard;
     std::atomic<int> localTone;
     std::unique_ptr<SampleData> sampleData;
+    std::atomic<bool> voiceNeedsUpdate{false};
+
+    void handleAsyncUpdate() override;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TnpCasioMt40AudioProcessor)

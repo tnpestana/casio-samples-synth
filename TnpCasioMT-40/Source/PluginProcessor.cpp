@@ -74,9 +74,6 @@ MidiKeyboardState & TnpCasioMt40AudioProcessor::getMidiState()
 //==============================================================================
 void TnpCasioMt40AudioProcessor::setVoice()
 {
-	for (auto i = 0; i < numMidiNotes; ++i)
-		synth.noteOff(1, i, 0.0f, true);
-
 	WavAudioFormat wavFormat;
 	localKeyboard = (int)*treeState.getRawParameterValue("keyboard");
 	localTone = (int)*treeState.getRawParameterValue("tone");
@@ -227,18 +224,27 @@ bool TnpCasioMt40AudioProcessor::isBusesLayoutSupported (const BusesLayout& layo
 
 void TnpCasioMt40AudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-	// the synth always adds its output to the audio buffer, so we have to clear it
-	// first..
 	buffer.clear();
 
 	if (localTone != (int)*treeState.getRawParameterValue("tone") ||
 		localKeyboard != (int)*treeState.getRawParameterValue("keyboard"))
-		setVoice();
+	{
+		for (auto i = 0; i < numMidiNotes; ++i)
+			synth.noteOff(1, i, 0.0f, true);
+
+		if (!voiceNeedsUpdate.exchange(true))
+			triggerAsyncUpdate();
+	}
 
 	midiState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
 
-	// get the synth to process the midi events and generate its output.
 	synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+}
+
+void TnpCasioMt40AudioProcessor::handleAsyncUpdate()
+{
+	voiceNeedsUpdate = false;
+	setVoice();
 }
 
 //==============================================================================
