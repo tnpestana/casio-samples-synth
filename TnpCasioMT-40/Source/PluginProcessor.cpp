@@ -23,6 +23,7 @@ namespace
     constexpr int zoneWidth = 12;
 
     constexpr double attackTime = 0.01;
+    constexpr double releaseTime = 0.5;
     constexpr double maxSampleLength = 10.0;
 }
 
@@ -46,6 +47,7 @@ TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
     midiState(),
 	localKeyboard(0),
 	localTone(0),
+	localSustain(false),
 	sampleData(std::make_unique<SampleData>())
 	
 #endif
@@ -77,8 +79,6 @@ void TnpCasioMt40AudioProcessor::setVoice()
 	WavAudioFormat wavFormat;
 	localKeyboard = (int)*treeState.getRawParameterValue("keyboard");
 	localTone = (int)*treeState.getRawParameterValue("tone");
-
-	double releaseTime = *treeState.getRawParameterValue("sustain") >= 0.5f ? 3.0 : 0.1;
 
 	const char* samplePtr = nullptr;
 	int sampleSize = 0;
@@ -237,6 +237,12 @@ void TnpCasioMt40AudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiB
 		if (!voiceNeedsUpdate.exchange(true))
 			triggerAsyncUpdate();
 	}
+
+	bool sustain = *treeState.getRawParameterValue("sustain") >= 0.5f;
+	if (sustain != localSustain.exchange(sustain))
+		midiMessages.addEvent(
+			sustain ? MidiMessage::sustainPedalOn(1) : MidiMessage::sustainPedalOff(1),
+			0);
 
 	midiState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
 
