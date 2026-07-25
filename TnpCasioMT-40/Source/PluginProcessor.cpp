@@ -62,54 +62,54 @@ void TnpCasioMt40AudioProcessor::setVoice()
 		synth.noteOff(1, i, 0.0f, true);
 
 	WavAudioFormat wavFormat;
-	std::unique_ptr<AudioFormatReader> audioReader;
 	localKeyboard = (int)*treeState.getRawParameterValue("keyboard");
 	localTone = (int)*treeState.getRawParameterValue("tone");
-    
-    switch (localKeyboard)
-    {
-        case 0:
-        {
-            audioReader = (std::unique_ptr<AudioFormatReader>)wavFormat.createReaderFor(new MemoryInputStream(sampleData.CasioMt40[localTone].first, sampleData.CasioMt40[localTone].second, false), true);
-            break;
-        }
-        case 1:
-        {
-            audioReader = (std::unique_ptr<AudioFormatReader>)wavFormat.createReaderFor(new MemoryInputStream(sampleData.CasioRapman[localTone].first, sampleData.CasioRapman[localTone].second, false), true);
-            break;
-        }
-        case 2:
-        {
-            // to map [A, B] --> [a, b] use: (val - A)*(b-a)/(B-A) + a
-            int convertedLocalTone = localTone * 12 / 24;
-            audioReader = (std::unique_ptr<AudioFormatReader>)wavFormat.createReaderFor(new MemoryInputStream(sampleData.CasioSa10[convertedLocalTone].first, sampleData.CasioSa10[convertedLocalTone].second, false), true);
-            break;
-        }
-        case 3:
-        {
-            // accomodate the combo attachment linear distribution of values by converting the range intervals
-            // to map [A, B] --> [a, b] use: (val - A)*(b-a)/(B-A) + a
-            int convertedLocalTone = localTone * 8 / 24;
-            audioReader = (std::unique_ptr<AudioFormatReader>)wavFormat.createReaderFor(new MemoryInputStream(sampleData.CasioSk1[convertedLocalTone].first, sampleData.CasioSk1[convertedLocalTone].second, false), true);
-            break;
-        }
-        default:
-            break;
-    }
 
+	const char* samplePtr = nullptr;
+	int sampleSize = 0;
 
-	BigInteger allNotes;
-	allNotes.setRange(0, 128, true);
+	switch (localKeyboard)
+	{
+		case 0:
+			samplePtr = sampleData.CasioMt40[localTone].first;
+			sampleSize = sampleData.CasioMt40[localTone].second;
+			break;
+		case 1:
+			samplePtr = sampleData.CasioRapman[localTone].first;
+			sampleSize = sampleData.CasioRapman[localTone].second;
+			break;
+		case 2:
+		{
+			int i = localTone * 12 / 24;
+			samplePtr = sampleData.CasioSa10[i].first;
+			sampleSize = sampleData.CasioSa10[i].second;
+			break;
+		}
+		case 3:
+		{
+			int i = localTone * 8 / 24;
+			samplePtr = sampleData.CasioSk1[i].first;
+			sampleSize = sampleData.CasioSk1[i].second;
+			break;
+		}
+		default:
+			return;
+	}
 
 	synth.clearSounds();
-	synth.addSound(new SamplerSound("demo sound",
-		*audioReader,
-		allNotes,
-		60,   // root midi note
-		0.01,  // attack time
-		0.1,  // release time
-		10.0  // maximum sample length
-	));
+
+	int roots[] = { 36, 48, 60, 72, 84 };
+	for (auto root : roots)
+	{
+		BigInteger notes;
+		notes.setRange(root - 6, 12, true);
+		auto reader = std::unique_ptr<AudioFormatReader>(
+			wavFormat.createReaderFor(
+				new MemoryInputStream(samplePtr, sampleSize, false), true));
+		if (reader != nullptr)
+			synth.addSound(new SamplerSound("demo",
+				*reader, notes, root, 0.01, 0.1, 10.0));
+	}
 }
 
 //==============================================================================
