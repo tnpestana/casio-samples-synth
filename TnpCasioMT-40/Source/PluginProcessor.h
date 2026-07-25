@@ -68,7 +68,6 @@ private:
     AudioProcessorValueTreeState treeState;
     MidiKeyboardState midiState;
     Synthesiser synth;
-    MidiMessageCollector midiCollector;
     std::atomic<int> localKeyboard;
 	std::atomic<int> localTone;
     SampleData sampleData;

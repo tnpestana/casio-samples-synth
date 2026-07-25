@@ -177,7 +177,6 @@ void TnpCasioMt40AudioProcessor::changeProgramName (int index, const String& new
 //==============================================================================
 void TnpCasioMt40AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-	midiCollector.reset(sampleRate);
 	synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 
@@ -216,8 +215,6 @@ void TnpCasioMt40AudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiB
 	// the synth always adds its output to the audio buffer, so we have to clear it
 	// first..
 	buffer.clear();
-
-	midiCollector.removeNextBlockOfMessages(midiMessages, buffer.getNumSamples());
 
 	if (localTone != (int)*treeState.getRawParameterValue("tone") ||
 		localKeyboard != (int)*treeState.getRawParameterValue("keyboard"))
