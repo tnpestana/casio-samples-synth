@@ -16,45 +16,41 @@
 //==============================================================================
 /**
 */
-class TnpCasioMt40AudioProcessorEditor  : public AudioProcessorEditor, 
-										  public ComboBox::Listener
+class TnpCasioMt40AudioProcessorEditor  : public AudioProcessorEditor,
+                                          public ComboBox::Listener,
+                                          public Button::Listener
 {
 public:
     TnpCasioMt40AudioProcessorEditor (TnpCasioMt40AudioProcessor&);
     ~TnpCasioMt40AudioProcessorEditor();
 
-    //==============================================================================
     void paint (Graphics&) override;
     void resized() override;
 
 private:
-	// Inherited via Listener
-	virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
+    void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked(Button* button) override;
     void keyboardChanged();
 
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
     TnpCasioMt40AudioProcessor& processor;
-	AudioProcessorValueTreeState& treeState;
+    AudioProcessorValueTreeState& treeState;
 
-	static StringArray casioMT40_tones;
-	static StringArray casioRPMN_tones;
-	static StringArray casioSA10_tones;
-	static StringArray casioSK1_tones;
+    static StringArray casioMT40_tones;
+    static StringArray casioRPMN_tones;
+    static StringArray casioSA10_tones;
+    static StringArray casioSK1_tones;
 
-	ComboBox comboKeyboard;
-	ComboBox comboTone;
+    Label labelKeyboard;
+    Label labelTone;
+    ComboBox comboKeyboard;
+    ComboBox comboTone;
+    ToggleButton sustainToggle;
 
-	MidiKeyboardComponent keyboard;
-    
-    
-	std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> attachmentTone;
-	std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> attachmentKeyboard;
+    MidiKeyboardComponent keyboard;
+
+    std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> attachmentTone;
+    std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> attachmentKeyboard;
+    std::unique_ptr<AudioProcessorValueTreeState::ButtonAttachment> attachmentSustain;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TnpCasioMt40AudioProcessorEditor)
-
-		
-
-		
-
 };

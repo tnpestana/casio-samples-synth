@@ -23,7 +23,6 @@ namespace
     constexpr int zoneWidth = 12;
 
     constexpr double attackTime = 0.01;
-    constexpr double releaseTime = 0.1;
     constexpr double maxSampleLength = 10.0;
 }
 
@@ -41,7 +40,8 @@ TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
 		{ 
 		  std::make_unique<AudioParameterChoice>(ParameterID("keyboard", 1), "keyboard",
 			StringArray("MT-40", "Rapman", "SA-10", "SK-1"), 0),
-		  std::make_unique<AudioParameterInt>(ParameterID("tone", 1), "tone", 0, numTones - 1, 1)
+		  std::make_unique<AudioParameterInt>(ParameterID("tone", 1), "tone", 0, numTones - 1, 1),
+		  std::make_unique<AudioParameterBool>(ParameterID("sustain", 1), "Sustain", false)
 		}),
     midiState(),
 	localKeyboard(0),
@@ -77,6 +77,8 @@ void TnpCasioMt40AudioProcessor::setVoice()
 	WavAudioFormat wavFormat;
 	localKeyboard = (int)*treeState.getRawParameterValue("keyboard");
 	localTone = (int)*treeState.getRawParameterValue("tone");
+
+	double releaseTime = *treeState.getRawParameterValue("sustain") >= 0.5f ? 3.0 : 0.1;
 
 	const char* samplePtr = nullptr;
 	int sampleSize = 0;
