@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <atomic>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SampleData.h"
 
@@ -68,8 +69,8 @@ private:
     MidiKeyboardState midiState;
     Synthesiser synth;
     MidiMessageCollector midiCollector;
-    int localKeyboard;
-	int localTone;
+    std::atomic<int> localKeyboard;
+	std::atomic<int> localTone;
     SampleData sampleData;
 
     //==============================================================================
