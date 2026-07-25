@@ -66,7 +66,7 @@ public:
         std::make_pair(BinaryData::RPMN_vibraphone_wav, BinaryData::RPMN_vibraphone_wavSize),
         std::make_pair(BinaryData::RPMN_vocoder_wav, BinaryData::RPMN_vocoder_wavSize),
         std::make_pair(BinaryData::RPMN_warmstrings_wav, BinaryData::RPMN_warmstrings_wavSize),
-        std::make_pair(BinaryData::RPMN_wawvoice_wav, BinaryData::RPMN_warmstrings_wavSize)
+        std::make_pair(BinaryData::RPMN_wawvoice_wav, BinaryData::RPMN_wawvoice_wavSize)
     };
     
     std::pair<const char *, const int> CasioSa10[12] {
