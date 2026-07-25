@@ -34,6 +34,8 @@ TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
 	
 #endif
 {
+	for (auto i = 0; i < 10; ++i)
+		synth.addVoice(new SamplerVoice());
 	setVoice();
 }
 
@@ -56,11 +58,9 @@ MidiKeyboardState & TnpCasioMt40AudioProcessor::getMidiState()
 //==============================================================================
 void TnpCasioMt40AudioProcessor::setVoice()
 {
-	synth.clearVoices();
-	for (auto i = 0; i < 10; ++i)
-	{
-		synth.addVoice(new SamplerVoice());
-	}
+	for (auto i = 0; i < 128; ++i)
+		synth.noteOff(1, i, 0.0f, true);
+
 	WavAudioFormat wavFormat;
 	std::unique_ptr<AudioFormatReader> audioReader;
 	localKeyboard = (int)*treeState.getRawParameterValue("keyboard");
