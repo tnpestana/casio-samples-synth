@@ -16,9 +16,6 @@ namespace
 {
     constexpr int numVoices = 10;
     constexpr int numMidiNotes = 128;
-    constexpr int numTones = 24;
-    constexpr int numSa10Tones = 12;
-    constexpr int numSk1Tones = 8;
 
     constexpr int zoneRoots[] = { 36, 48, 60, 72, 84 };
     constexpr int zoneHalfRange = 6;
@@ -97,14 +94,14 @@ void TnpCasioMt40AudioProcessor::setVoice()
 			break;
 		case 2:
 		{
-			int i = localTone * numSa10Tones / numTones;
+			int i = jmap(localTone, 0, numTones - 1, 0, numSa10Tones - 1);
 			samplePtr = sampleData.CasioSa10[i].first;
 			sampleSize = sampleData.CasioSa10[i].second;
 			break;
 		}
 		case 3:
 		{
-			int i = localTone * numSk1Tones / numTones;
+			int i = jmap(localTone, 0, numTones - 1, 0, numSk1Tones - 1);
 			samplePtr = sampleData.CasioSk1[i].first;
 			sampleSize = sampleData.CasioSk1[i].second;
 			break;

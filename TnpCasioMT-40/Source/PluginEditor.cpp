@@ -125,18 +125,14 @@ void TnpCasioMt40AudioProcessorEditor::keyboardChanged()
 	case 3:
 		comboTone.clear();
 		comboTone.addItemList(casioSA10_tones, 1);
-		// accomodate the combo attachment linear distribution of values by converting the range intervals
-		// to map [A, B] --> [a, b] use: (val - A)*(b-a)/(B-A) + a
-		convertedToneParam = toneParam * 12 / 24;
+		convertedToneParam = jmap(toneParam, 0, numTones - 1, 0, numSa10Tones - 1);
 		comboTone.setSelectedItemIndex(convertedToneParam);
 		break;
 	// SK-1
 	case 4:
 		comboTone.clear();
 		comboTone.addItemList(casioSK1_tones, 1);
-		// accomodate the combo attachment linear distribution of values by converting the range intervals
-		// to map [A, B] --> [a, b] use: (val - A)*(b-a)/(B-A) + a
-		convertedToneParam = toneParam * 8 / 24;
+		convertedToneParam = jmap(toneParam, 0, numTones - 1, 0, numSk1Tones - 1);
 		comboTone.setSelectedItemIndex(convertedToneParam);
 		break;
 	}

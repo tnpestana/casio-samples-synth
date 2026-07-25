@@ -14,6 +14,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SampleData.h"
 
+constexpr int numTones = 24;
+constexpr int numSa10Tones = 12;
+constexpr int numSk1Tones = 8;
+
 //==============================================================================
 /**
 */
