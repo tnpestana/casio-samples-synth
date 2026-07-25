@@ -93,14 +93,14 @@ void TnpCasioMt40AudioProcessor::setVoice()
 			break;
 		case 2:
 		{
-			int i = jmap(localTone, 0, numTones - 1, 0, numSa10Tones - 1);
+			int i = jmap((int)localTone, 0, numTones - 1, 0, numSa10Tones - 1);
 			samplePtr = sampleData->CasioSa10[i].first;
 			sampleSize = sampleData->CasioSa10[i].second;
 			break;
 		}
 		case 3:
 		{
-			int i = jmap(localTone, 0, numTones - 1, 0, numSk1Tones - 1);
+			int i = jmap((int)localTone, 0, numTones - 1, 0, numSk1Tones - 1);
 			samplePtr = sampleData->CasioSk1[i].first;
 			sampleSize = sampleData->CasioSk1[i].second;
 			break;
