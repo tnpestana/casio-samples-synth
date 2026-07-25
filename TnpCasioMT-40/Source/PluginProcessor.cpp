@@ -41,9 +41,9 @@ TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
 	),
 	treeState(*this, nullptr, "CasioState", 
 		{ 
-		  std::make_unique<AudioParameterChoice>("keyboard", "keyboard",
+		  std::make_unique<AudioParameterChoice>(ParameterID("keyboard", 1), "keyboard",
 			StringArray("MT-40", "Rapman", "SA-10", "SK-1"), 1),
-		  std::make_unique<AudioParameterInt>("tone", "tone", 0, numTones - 1, 1)
+		  std::make_unique<AudioParameterInt>(ParameterID("tone", 1), "tone", 0, numTones - 1, 1)
 		}),
     midiState(),
 	localKeyboard(0),
