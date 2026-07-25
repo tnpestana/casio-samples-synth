@@ -240,9 +240,7 @@ void TnpCasioMt40AudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiB
 
 	bool sustain = *treeState.getRawParameterValue("sustain") >= 0.5f;
 	if (sustain != localSustain.exchange(sustain))
-		midiMessages.addEvent(
-			sustain ? MidiMessage::sustainPedalOn(1) : MidiMessage::sustainPedalOff(1),
-			0);
+		midiMessages.addEvent(MidiMessage(0xB0, 64, sustain ? 127 : 0), 0);
 
 	midiState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
 
