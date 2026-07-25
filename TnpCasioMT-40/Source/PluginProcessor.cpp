@@ -41,13 +41,11 @@ TnpCasioMt40AudioProcessor::TnpCasioMt40AudioProcessor()
 		{ 
 		  std::make_unique<AudioParameterChoice>(ParameterID("keyboard", 1), "keyboard",
 			StringArray("MT-40", "Rapman", "SA-10", "SK-1"), 0),
-		  std::make_unique<AudioParameterInt>(ParameterID("tone", 1), "tone", 0, numTones - 1, 1),
-		  std::make_unique<AudioParameterBool>(ParameterID("sustain", 1), "Sustain", false)
+		  std::make_unique<AudioParameterInt>(ParameterID("tone", 1), "tone", 0, numTones - 1, 1)
 		}),
     midiState(),
 	localKeyboard(0),
 	localTone(0),
-	localSustain(false),
 	sampleData(std::make_unique<SampleData>())
 	
 #endif
@@ -237,10 +235,6 @@ void TnpCasioMt40AudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiB
 		if (!voiceNeedsUpdate.exchange(true))
 			triggerAsyncUpdate();
 	}
-
-	bool sustain = *treeState.getRawParameterValue("sustain") >= 0.5f;
-	if (sustain != localSustain.exchange(sustain))
-		midiMessages.addEvent(MidiMessage(0xB0, 64, sustain ? 127 : 0), 0);
 
 	midiState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
 

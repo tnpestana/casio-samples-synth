@@ -17,8 +17,7 @@
 /**
 */
 class TnpCasioMt40AudioProcessorEditor  : public AudioProcessorEditor,
-                                          public ComboBox::Listener,
-                                          public Button::Listener
+                                          public ComboBox::Listener
 {
 public:
     TnpCasioMt40AudioProcessorEditor (TnpCasioMt40AudioProcessor&);
@@ -29,7 +28,6 @@ public:
 
 private:
     void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
-    void buttonClicked(Button* button) override;
     void keyboardChanged();
 
     TnpCasioMt40AudioProcessor& processor;
@@ -44,13 +42,11 @@ private:
     Label labelTone;
     ComboBox comboKeyboard;
     ComboBox comboTone;
-    ToggleButton sustainToggle;
 
     MidiKeyboardComponent keyboard;
 
     std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> attachmentTone;
     std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> attachmentKeyboard;
-    std::unique_ptr<AudioProcessorValueTreeState::ButtonAttachment> attachmentSustain;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TnpCasioMt40AudioProcessorEditor)
 };

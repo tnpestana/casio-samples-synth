@@ -77,7 +77,6 @@ private:
     Synthesiser synth;
     std::atomic<int> localKeyboard;
     std::atomic<int> localTone;
-    std::atomic<bool> localSustain{false};
     std::unique_ptr<SampleData> sampleData;
     std::atomic<bool> voiceNeedsUpdate{false};
 

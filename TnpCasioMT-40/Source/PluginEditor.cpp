@@ -71,12 +71,6 @@ TnpCasioMt40AudioProcessorEditor::TnpCasioMt40AudioProcessorEditor (TnpCasioMt40
 
     attachmentTone = std::make_unique<AudioProcessorValueTreeState::ComboBoxAttachment>(treeState, "tone", comboTone);
 
-    sustainToggle.setButtonText("Sustain");
-    sustainToggle.setColour(ToggleButton::textColourId, Colours::white);
-    addAndMakeVisible(sustainToggle);
-    sustainToggle.addListener(this);
-    attachmentSustain = std::make_unique<AudioProcessorValueTreeState::ButtonAttachment>(treeState, "sustain", sustainToggle);
-
     keyboard.setKeyWidth(20);
     keyboard.setAvailableRange(24, 96);
     addAndMakeVisible(keyboard);
@@ -114,8 +108,6 @@ void TnpCasioMt40AudioProcessorEditor::resized()
     comboKeyboard.setBounds(comboArea.removeFromLeft(240).withTrimmedLeft(50));
     comboTone.setBounds(comboArea.withTrimmedLeft(50));
 
-    sustainToggle.setBounds(area.removeFromTop(24).withTrimmedLeft(10));
-
     keyboard.setBounds(area.reduced(10, 4));
 }
 
@@ -123,10 +115,6 @@ void TnpCasioMt40AudioProcessorEditor::comboBoxChanged(ComboBox* comboBoxThatHas
 {
     if (&comboKeyboard == comboBoxThatHasChanged)
         keyboardChanged();
-}
-
-void TnpCasioMt40AudioProcessorEditor::buttonClicked(Button*)
-{
 }
 
 void TnpCasioMt40AudioProcessorEditor::keyboardChanged()
