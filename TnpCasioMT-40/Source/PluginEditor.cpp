@@ -22,24 +22,32 @@ TnpCasioMt40AudioProcessorEditor::TnpCasioMt40AudioProcessorEditor (TnpCasioMt40
 	addAndMakeVisible(comboTone);
 	addAndMakeVisible(keyboard);
 
-	// populate keyboard choice combo box with strings stored as choices in keyboard parameter
+	comboKeyboard.setColour(ComboBox::backgroundColourId, Colours::white);
+	comboKeyboard.setColour(ComboBox::textColourId, Colours::black);
+	comboKeyboard.setColour(ComboBox::arrowColourId, Colours::black);
+	comboKeyboard.setColour(ComboBox::outlineColourId, Colours::white);
+	comboTone.setColour(ComboBox::backgroundColourId, Colours::white);
+	comboTone.setColour(ComboBox::textColourId, Colours::black);
+	comboTone.setColour(ComboBox::arrowColourId, Colours::black);
+	comboTone.setColour(ComboBox::outlineColourId, Colours::white);
+
 	if (auto* choiceParameter = dynamic_cast<AudioParameterChoice*>(treeState.getParameter("keyboard")))
 		comboKeyboard.addItemList(choiceParameter->choices, 1);
 
-	// populate casioMT-40_tones list with numbers while we dont have sound names
 	for (int i = 1; i < 25; i++)
 		casioMT40_tones.add((String)i);
 
+	comboKeyboard.addListener(this);
+	comboTone.addListener(this);
+
 	attachmentKeyboard = std::make_unique<AudioProcessorValueTreeState::ComboBoxAttachment>(treeState, "keyboard", comboKeyboard);
-	attachmentTone = std::make_unique<AudioProcessorValueTreeState::ComboBoxAttachment>(treeState, "tone", comboTone);
 
 	if (comboKeyboard.getSelectedId() == 0)
 		comboKeyboard.setSelectedId(1);
 
 	keyboardChanged();
 
-	comboKeyboard.addListener(this);
-	comboTone.addListener(this);
+	attachmentTone = std::make_unique<AudioProcessorValueTreeState::ComboBoxAttachment>(treeState, "tone", comboTone);
 
 	setSize(400, 200);
 }
@@ -73,15 +81,7 @@ StringArray TnpCasioMt40AudioProcessorEditor::casioSK1_tones{
 //==============================================================================
 void TnpCasioMt40AudioProcessorEditor::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    //g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
 	g.fillAll(juce::Colours::darkgrey);
-
-	getLookAndFeel().setColour(ComboBox::backgroundColourId, Colours::white);
-	getLookAndFeel().setColour(ComboBox::textColourId, Colours::black);
-	getLookAndFeel().setColour(ComboBox::arrowColourId, Colours::black);
-	getLookAndFeel().setColour(PopupMenu::backgroundColourId, Colours::white);
-	getLookAndFeel().setColour(PopupMenu::textColourId, Colours::black);
 }
 
 void TnpCasioMt40AudioProcessorEditor::resized()
